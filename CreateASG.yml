@@ -21,7 +21,6 @@
           Environment: "Dev"
         state: present
       register: app_asg
-    
     - name: Create Auto Scaling Group for Web Subnet
       ec2_asg:
         name: "Web-ASG"
