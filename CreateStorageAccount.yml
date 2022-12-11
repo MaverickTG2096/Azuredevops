@@ -1,0 +1,29 @@
+- hosts: localhost
+  connection: local
+  tasks:
+    - name: Create a resource group
+      azure_rm_resourcegroup:
+        name: myResourceGroup
+        location: eastus
+
+    - name: Create Storage account
+      azure_rm_storageaccount:
+        name: myStorageAccount
+        resource_group: myResourceGroup
+        sku: Standard_LRS
+        kind: StorageV2
+        access_tier: Hot
+        enable_https_traffic_only: true
+        min_tls_version: TLS1_2
+        disable_blob_public_access: true
+        enable_files_aadds_integration: true
+        enable_large_file_share: true
+        enable_secure_transfer: true
+
+    - name: Create Storage Account Private Endpoint
+      azure_rm_privateendpoint:
+        name: myPrivateEndpoint
+        resource_group: myResourceGroup
+        location: eastus
+        subnet_name: mySubnet
+        private_connection_resource_id: /subscriptions/{{ subscription_id }}/resource

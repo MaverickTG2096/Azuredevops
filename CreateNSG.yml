@@ -1,0 +1,31 @@
+- hosts: localhost
+  connection: local 
+  tasks: 
+  
+  - name: Create NSG
+    azure_rm_networksecuritygroup:
+      resource_group: 'test_nsg_rg'
+      name: 'test_nsg' 
+      location: 'westus2'
+      tags:
+        Environment: testing
+      state: present
+    register: nsg_output
+      
+  - name: Create Inbound Rules
+    azure_rm_networksecurityrule:
+      resource_group: 'test_nsg_rg'
+      security_group_name: 'test_nsg'
+      name: 'rule_name'
+      access: 'Allow'
+      direction: 'Inbound'
+      protocol: 'TCP'
+      source_address_prefix: '*'
+      source_port_range: '*'
+      destination_address_prefix: '*'
+      destination_port_range: '*'
+      priority: 100
+      state: present
+    register: inbound_rule_output
+    
+  - name: Create Outbound Rules

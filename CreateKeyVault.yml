@@ -1,0 +1,26 @@
+- name: Create KeyVault with Private Endpoint
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Create resource group
+      azure_rm_resourcegroup:
+        name: test-rg
+        location: eastus
+      register: rg
+
+    - name: Create KeyVault
+      azure_rm_keyvault:
+        name: test-vault
+        resource_group: "{{ rg.name }}"
+        location: eastus
+        sku: Standard
+      register: vault
+
+    - name: Create Private Endpoint
+      azure_rm_privateendpoint:
+        name: test-endpoint
+        resource_group_name: "{{ rg.name }}"
+        location: eastus
+        private_connection_resource_id: "{{ vault.id }}"
+        subnet_id: "/subscriptions/{{ subscription_id }}/resourceGroups/{{ rg.name }}/providers/Microsoft.Network/virtualNetworks/{{ vnet_name }}/subnets/{{ subnet_name }}"
+        tags:

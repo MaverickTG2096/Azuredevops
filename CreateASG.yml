@@ -1,0 +1,29 @@
+- hosts: localhost
+  gather_facts: no
+  connection: local
+  vars:
+    subnets:
+      app: "subnet-app"
+      web: "subnet-web"
+      db: "subnet-db"
+  tasks:
+    - name: Create Auto Scaling Group for App Subnet
+      ec2_asg:
+        name: "App-ASG"
+        availability_zones: "{{ subnets.app }}"
+        launch_config_name: "App-LC"
+        min_size: 1
+        max_size: 5
+        health_check_period: "120"
+        health_check_type: "EC2"
+        tags:
+          Name: "App-ASG"
+          Environment: "Dev"
+        state: present
+      register: app_asg
+    
+    - name: Create Auto Scaling Group for Web Subnet
+      ec2_asg:
+        name: "Web-ASG"
+        availability_zones: "{{ subnets.web }}"
+        launch_config_name: "Web-

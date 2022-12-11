@@ -1,0 +1,16 @@
+- name: Assign RBAC to RG
+  hosts: all
+  become: true
+  tasks:
+  - name: Create resource group
+    azure_rm_resourcegroup:
+      name: examplegroup
+      location: eastus
+      state: present
+  - name: Create role assignment
+    azure_rm_roleassignment:
+      name: exampleassignment
+      resource_group: examplegroup
+      role_definition_name: Contributor
+      principal_id: 00000000-0000-0000-0000-000000000000
+      state: present
